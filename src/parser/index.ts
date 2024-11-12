@@ -7,11 +7,19 @@ import { pick } from "./pick";
 import { skip } from "./skip";
 import { ParserLeaf } from "./types";
 
+const NOOP = () => {};
+
 type ParseOptions = {
   tokens: string[];
   filename: string;
-  log(...args: any[]): void;
-  warn(...args: any[]): void;
+  onCapture?: (leaf: ParserLeaf, key: string, value: string | number) => void;
+  onCalculatedNetDifference?: (
+    expectedNet: number,
+    calculatedNet: number,
+  ) => void;
+  onPop?: (leaf: ParserLeaf, prevLeaf: ParserLeaf) => void;
+  onPush?: (leaf: ParserLeaf, prevLeaf: ParserLeaf) => void;
+  onToken?: (token: string) => void;
 };
 
 const PARSE_TREE: Record<string, ParserLeaf> = {
@@ -70,8 +78,11 @@ const DEDUCTIONS = [
 export function parse({
   tokens,
   filename,
-  log,
-  warn,
+  onCalculatedNetDifference = NOOP,
+  onCapture = NOOP,
+  onPush = NOOP,
+  onPop = NOOP,
+  onToken = NOOP,
 }: ParseOptions): Record<string, string | number> {
   let stack: ParserLeaf[] = [];
   let current: ParserLeaf = { ...PARSE_TREE };
@@ -87,7 +98,7 @@ export function parse({
     token = token.trim();
     const nextToken = tokens[index + 1];
 
-    log(token);
+    onToken(token);
 
     if (typeof current === "string") {
       capture(current, token);
@@ -125,7 +136,7 @@ export function parse({
           : labelOrValues;
 
       Object.entries(values).forEach(([key, value]) => {
-        log("capture", key, value);
+        onCapture(current, key, value);
       });
 
       data = { ...data, ...values };
@@ -136,7 +147,6 @@ export function parse({
       while (true) {
         const next = stack.pop();
         if (next == null) {
-          log("pop -- DONE");
           done = true;
           return;
         }
@@ -149,14 +159,17 @@ export function parse({
           }
         }
 
+        const old = current;
         current = next;
         prev = [];
+
+        onPop(current, old);
+
         return;
       }
     }
 
     function push(leaf: ParserLeaf) {
-      log("push", leaf);
       stack.push(current);
 
       if (typeof leaf === "object" && leaf) {
@@ -165,8 +178,11 @@ export function parse({
         leaf = { ...leaf };
       }
 
+      const old = current;
       current = leaf;
       prev = [];
+
+      onPush(current, old);
     }
   });
 
@@ -191,12 +207,8 @@ export function parse({
   data["calculated_total_deductions"] = totalDeductions;
   data["calculated_net_pay"] = calculatedNet;
 
-  const diff = calculatedNet - data["net_pay"];
-
   if (calculatedNet !== data["net_pay"]) {
-    warn(
-      `${filename}: Calculated net (${calculatedNet}) differs from statement net (${data["net_pay"]}) by ${diff}`,
-    );
+    onCalculatedNetDifference(data["net_pay"], calculatedNet);
   }
 
   return data;
