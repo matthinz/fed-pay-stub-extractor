@@ -45,6 +45,10 @@ First, this tool uses [`pdf2json`](https://github.com/modesty/pdf2json) to extra
 
 I couldn't figure out how.
 
+## This is a bad idea. How do I know the numbers this thing generates match reality?
+
+fed-pay-stub-extractor attempts to sum up all your deductions, subtract them from your gross pay, and check that the net pay it calculates matches what it found in the PDF. This hopefully gives you a little confidence? I don't know, man. Don't use this.
+
 ### You should simply use a large language model to extract all this information.
 
 That's not a question. Also, I found in my testing that local LLMs weren't _quite_ good enough to get "correct" data out of these PDFs and I didn't really feel like turning my pay stubs into training data for API-based models.
@@ -53,5 +57,5 @@ That's not a question. Also, I found in my testing that local LLMs weren't _quit
 
 There are a couple of things this could be:
 
-1. Your pay stub might have fields on it that mine doesn't, and so they're not being parsed out.
+1. Your pay stub might have fields on it that mine doesn't. This means that fed-pay-stub-extractor is probably not parsing out all of your deductions.
 2. The stated "net" numbers on your pay stub might include factors that are not documented elsewhere on your pay stub. This can happen if an HR snafu leads to your pay stubs being incorrect for some reason.  Double check the numbers and :fingers_crossed: everything just works out.
