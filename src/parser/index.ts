@@ -23,6 +23,7 @@ type ParseOptions = {
 };
 
 const PARSE_TREE: Record<string, ParserLeaf> = {
+  "For Pay Period Ending": captureAs("pay_period_end_date", date),
   "Pay Date": captureAs("pay_date", date),
   "Gross Pay": captureAs("gross_pay", monetaryAmount),
   "Total Deductions": captureAs("total_deductions", invert(monetaryAmount)),
