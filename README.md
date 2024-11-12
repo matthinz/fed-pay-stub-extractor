@@ -4,7 +4,7 @@ This repo contains a small utility for extracting structured data from pay stub 
 
 ## Requirements
 
-* Node.js (see [`.nvmrc`](./nvmrc)) for recommended version
+* Node.js (see [`.nvmrc`](./nvmrc) for recommended version)
 * Yarn
 
 ## Getting started
