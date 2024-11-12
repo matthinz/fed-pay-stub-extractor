@@ -11,10 +11,10 @@ This repo contains a small utility for extracting structured data from pay stub 
 
 First of all, you need to go to Employee Express and download PDFs of your pay stubs. If you have a lot, this will take you a while.
 
-Then, install the dependencies:
+Then, install the dependencies and build the project:
 
 ```shell
-$ yarn
+$ yarn && yarn build
 ```
 
 Then run the script using `yarn start`, passing in paths to PDF files:
