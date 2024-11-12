@@ -20,19 +20,19 @@ $ yarn && yarn build
 Then run the script using `yarn start`, passing in paths to PDF files:
 
 ```shell
-$ yarn start path/to/your/pay-stub.pdf
+$ yarn --silent start path/to/your/pay-stub.pdf
 ```
 
 You can pass multiple PDF files in this way, just add them to the command line:
 
 ```shell
-$ yarn start path/to/your/pay-stubs/*.pdf
+$ yarn --silent start path/to/your/pay-stubs/*.pdf
 ```
 
 By default, the output is in CSV, suitable for copying and pasting into an actual spreadsheet. You can also get JSON if you want:
 
 ```shell
-$ yarn start path/to/your/pay-stub.pdf --json
+$ yarn --silent start path/to/your/pay-stub.pdf --json
 ```
 
 ## How it works
